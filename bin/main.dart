@@ -10,5 +10,33 @@
 // flattenList([1, "2", [3, function () { return 4; }, [ "five" ], "six", true, { prop: "val" }]])
 //  ➞ [1, "2", 3, 4, "five", "six", true, { prop: "val" }]
 
+List finalList = [];
+List flattenList(dynamic givenList){
+  if(givenList is List){
+    givenList.forEach((item){
+      if(item is List){
+        flattenList(item);
+      }
+      else if(item is Function){
+        flattenList(Function.apply(item,null));
+      }
+      else {
+        finalList.add(item);
+      }
+    });
+  }
+  else{
+    finalList.add(givenList);
+  }
+  return finalList;
+}
+
 main() {
+  print(flattenList([1, "2",() { return 4; }, [3, 'hello', [ "five" ], "six", true, { 'prop': "val" }]]));
+  finalList.clear();
+  print(flattenList([1, "2",() { return 'how are you'; }, [3, 'hello', [ "five" ], "six", true, { 'prop': "val" }]]));
+  finalList.clear();
+  print(flattenList([1, "2",() { return (4+8); }, [3, 'hello', [ "five" ], "six", true, { 'prop': "val" }]]));
+  finalList.clear();
+  print(flattenList([1, "2",() { return [1,3,5,7,9]; }, [3, 'hello', [ "five" ], "six", true, { 'prop': "val" }]]));
 }
